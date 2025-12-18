@@ -42,7 +42,7 @@ require_once 'function.php';
                     <a href="display.php?mode=add_article"><button class="add-btn">Add article</button></a>
                 <?php endif; ?>
                 <?php if ($islogin): ?>
-                    <a href="register.php?mode=null"> <button class="logout-btn">Logout</button></a>
+                    <a href="regester.php?mode=null"> <button class="logout-btn">Logout</button></a>
                 <?php else: ?>
                     <div class="auth-buttons">
                         <a href="regester.php?mode=login"><button class="login-btn">Login</button></a>
@@ -52,7 +52,8 @@ require_once 'function.php';
         </div>
         <div class="navbar-bottom">
             <a href="index.php" class="nav-link">Home</a>
-            <?php if ($islogin && isset($_SESSION['role']) && $_SESSION['role'] == 'admin') { ?>
+            
+            <?php if ($islogin && isset($_SESSION['role']) && ($_SESSION['role'] == 'admin' || $_SESSION['role'] == 'author')) { ?>
                 <a href="dashboard.php?action=show_users" class="nav-link">Dashboard</a>
             <?php } ?>
         </div>
@@ -70,7 +71,7 @@ require_once 'function.php';
 <!--""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""-->
 
 <!--""""""""""""""""""""""""""""""""""""""Add Article"""""""""""""""""""""""""""""""""""""""""""-->
-    <?php if ($mode == 'add_article') { ?>
+    <?php if ($mode == 'add_article' && ($_SESSION['role'] == 'admin' || $_SESSION['role'] == 'author')) { ?>
         <form class="post-form" method="POST" action="display.php?postid=null&mode=save_article">
             <div class="form-group">
                 <label for="username">User Name</label>
@@ -120,7 +121,7 @@ require_once 'function.php';
                     <div class="user-info">
                         <strong>@<?php echo $user['user_name'] ?></strong> · <span> <?php echo $post['date_up_art'] ?> </span> . <span> <?php echo $cate['titre_cat']  ?> </span>
                     </div>
-                    <?php if ($islogin && isset($_SESSION['role']) && ($_SESSION['role'] == 'admin' || $_SESSION['role'] == 'author')) { ?>
+                    <?php if ($islogin && isset($_SESSION['role']) && isset($_SESSION['role']) && $_SESSION['role'] == 'admin'){ ?>
                         <div class="actions">
                             <a href="display.php?postid=<?php echo $postid ?>&mode=edit"> <button class="edit">Edit</button> </a>
                             <a href="display.php?postid=<?php echo $postid ?>&mode=delet"> <button class="delete">Delete</button> </a>
@@ -145,14 +146,16 @@ require_once 'function.php';
                 </div>
 
                 <div class="comments">
-                    <?php foreach ($post_comments_ as $cmt) { ?>
+                    <?php foreach ($post_comments_ as $cmt) { 
+                        $user = get_user_name_by_id($sql,$cmt['user_name']);
+                        ?>
                         <div class="comment">
                             <?php $id_mt = $cmt['id_cmt'] ?>
                             <div class="comment-user"><?php
-                                echo ($cmt['user_name'] == null) ? '@Visiteur' : $cmt['user_name'];
+                                echo ($cmt['user_name'] == null) ? '@Visiteur' :  $user['user_name'];
                             ?></div>
                             <div class="comment-content"><?php echo $cmt['content_cmt'] ?></div>
-                            <?php if ($islogin && $_SESSION['role'] == 'admin') { ?>
+                            <?php if ($islogin && isset($_SESSION['role']) && $_SESSION['role'] == 'admin') { ?>
                                 <div class="comment-actions">
                                     <a href="display.php?postid=<?php echo $postid ?>&mode=delet_cmt&cmt_id=<?php echo $id_mt ?>"> <button class="delete">حذف</button></a>
                                 </div>
@@ -163,7 +166,7 @@ require_once 'function.php';
             <?php } ?>
             </div>
 <!--""""""""""""""""""""""""""""""""""""""Edit Article"""""""""""""""""""""""""""""""""""""""""""-->
-            <?php if ($mode == 'edit') {
+            <?php if ($mode == 'edit' && isset($_SESSION['role'])&&($_SESSION['role'] == 'admin' || $_SESSION['role'] == 'author')) {
                 $user = get_user_name_by_id($sql, $post['id_user']);?>
                 <form class="post-form" method="POST" action="display.php?postid=<?php echo $postid ?>&mode=updated">
                     <div class="form-group">
@@ -206,7 +209,7 @@ require_once 'function.php';
 
 <!--""""""""""""""""""""""""""""""""""""""Edit user"""""""""""""""""""""""""""""""""""""""""""-->
 
-    <?php if ($mode == 'edit_user') {
+    <?php if ($mode == 'edit_user' && isset($_SESSION['role'])  && isset($_SESSION['role']) && $_SESSION['role'] == 'admin') {
         $user = get_user_byid($sql, $postid); ?>
         <form class="post-form" method="POST" action="display.php?postid=<?php echo $postid ?>&mode=save_update_user">
             <div class="form-group">
@@ -238,7 +241,7 @@ require_once 'function.php';
 <!--""""""""""""""""""""""""""""""" Category manage """"""""""""""""""""""""""""""""""""""""""""-->
 <!--""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""-->
 
-    <?php if ($mode == 'edit_category' || $mode == 'add_category') { 
+    <?php if (($mode == 'edit_category' || $mode == 'add_category') && isset($_SESSION['role']) && $_SESSION['role'] == 'admin') { 
         $category = get_categorie_by_id($sql, $postid) ?> <!-- get category name witch id -->
         
         <form class="post-form" method="POST" action="display.php?postid=<?php echo $postid ?>&mode=<?php echo ($mode == 'edit_category') ? 'save_update_category' : 'save_add_category'; ?>">
@@ -266,19 +269,19 @@ require_once 'function.php';
 <!--mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm Article function mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm-->
 <!-- delet article -->
     <?php
-   if ($mode == 'delet') {
+   if ($mode == 'delet' && isset($_SESSION['role']) && ($_SESSION['role'] == 'admin' || $_SESSION['role'] == 'author')) {
         delete_article($sql, $postid);
         header("Location: index.php");
         exit;
     }
 //    update article
-    if ($mode == 'updated') {
+    if ($mode == 'updated' && isset($_SESSION['role']) && ($_SESSION['role'] == 'admin' || $_SESSION['role'] == 'author') ) {
         update_article($sql, $_POST["title"], $_POST["content"], $_POST["img_url"], $_POST["created_at"], $_POST["category"], $postid);
         header("Location: index.php");
         exit;
     }
     //    add article
-  if ($mode == 'save_article') {
+  if ($mode == 'save_article' && isset($_SESSION['role']) &&  ($_SESSION['role'] == 'admin'  || $_SESSION['role'] == 'author')) {
         $user_id_data = get_user_id_by_name($sql, $_SESSION['username']); //get user id witch this methode 
         $get_cat_id = get_categorie_id_by_iname($sql, $_POST["category"]);
         add_article($sql, $_POST["title"], $_POST["content"], $_POST["img_url"], $user_id_data['id'], $get_cat_id['id']);
@@ -288,12 +291,12 @@ require_once 'function.php';
 //wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww User function  wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
 
 //oooooooooooooooo  save updated user oooooooooooooooooo
-    if ($mode == 'save_update_user') {
+    if ($mode == 'save_update_user' && isset($_SESSION['role']) && $_SESSION['role'] == 'admin') {
         update_user_byid($sql, $_POST["username"], $_POST["pass"], $_POST["email"], $_POST["role"]);
         header("Location: dashboard.php?action=show_users");
     }
 //oooooooooooooooo  delet user  oooooooooooooooooo
-    if ($mode == 'delet_user') {
+    if ($mode == 'delet_user'  && isset($_SESSION['role']) && $_SESSION['role'] == 'admin') {
         delete_user_by_name($sql, $postid);
         header("Location: dashboard.php?action=show_users");
         exit;
@@ -315,20 +318,20 @@ require_once 'function.php';
         header("Location: display.php?postid=$postid&mode=display");
     }
 //oooooooooooooooo  delete comment  oooooooooooooooooo
-    if ($mode == 'delet_cmt') {
+    if ($mode == 'delet_cmt' && isset($_SESSION['role']) && $_SESSION['role'] == 'admin') {
         delete_comment_by_id($sql, $_GET["cmt_id"]);
         header("Location: dashboard.php?action=show_comments");
     }
 //oooooooooooooooo  accept comment  oooooooooooooooooo
 
 //if addmin mark un comment as spam this comment not show but admin onmy can accept this comment if click in accept this comment show agine
-    if ($mode == 'accept_comment') {
+    if ($mode == 'accept_comment' && isset($_SESSION['role']) && $_SESSION['role'] == 'admin') {
         approve_comment_by_id($sql, $_GET["postid"]);
         header("Location: dashboard.php?action=show_comments");
     }
 // admin can add commentsz as spam
 
-    if ($mode == 'add_cmt_to_spam') {
+    if ($mode == 'add_cmt_to_spam' && isset($_SESSION['role']) && $_SESSION['role'] == 'admin') {
         add_cmt_to_spam($sql, $_GET["cmt_id"]);
         header("Location: dashboard.php?action=show_comments");
     }
@@ -337,18 +340,18 @@ require_once 'function.php';
 
 //oooooooooooooooo  update category  oooooooooooooooooo
 
-    if ($mode == 'save_update_category') {
+    if ($mode == 'save_update_category'  && isset($_SESSION['role']) && $_SESSION['role'] == 'admin') {
         $get_cat_id = get_categorie_id_by_iname($sql, $postid);
         update_category($sql, $get_cat_id['id'], $_POST['titre'], $_POST['description']);
         header("Location: dashboard.php?action=show_category");
     }
 //oooooooooooooooo  add category  oooooooooooooooooo
-    if ($mode == 'save_add_category') {
+    if ($mode == 'save_add_category'  && isset($_SESSION['role']) && $_SESSION['role'] == 'admin') {
         add_category($sql, $_POST['titre'], $_POST['description']);
         header("Location: dashboard.php?action=show_category");
     }
 //oooooooooooooooo  delete category  oooooooooooooooooo
-    if ($mode == 'delet_category') {
+    if ($mode == 'delet_category'  && isset($_SESSION['role']) && $_SESSION['role'] == 'admin') {
         $get_cat_id = get_categorie_id_by_iname($sql, $postid);
         delet_category($sql, $get_cat_id['id']);
         header("Location: dashboard.php?action=show_category");
