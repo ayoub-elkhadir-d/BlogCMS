@@ -63,8 +63,9 @@ $data ->execute();
   </div>
   <div class="navbar-bottom">
     <a href="index.php" class="nav-link">Home</a>
+
        <?php
-       if($islogin && isset($_SESSION['role']) && $_SESSION['role'] == 'admin' ){
+       if ($islogin && isset($_SESSION['role']) && ($_SESSION['role'] == 'admin' || $_SESSION['role'] == 'author')){
         ?>
     <a href="dashboard.php?action=show_users" class="nav-link">Dashboard</a>
 
