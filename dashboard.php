@@ -27,7 +27,7 @@ $all_cat = get_all_categories($sql);
 </head>
 <body>
 <!-- this the main condaition if admine you can see  thois pge else you can not see-->
-<?php if($islogin && $_SESSION['role'] == 'admin'): ?> 
+<?php if($islogin && ($_SESSION['role'] == 'admin' || $_SESSION['role'] == 'author')): ?> 
 
 <nav class="navbar">
     <div class="navbar-top">
@@ -44,11 +44,18 @@ $all_cat = get_all_categories($sql);
     </div>
     <div class="navbar-bottom">
         <a href="index.php" class="nav-link">Home</a>
-        <a href="?action=show_users" class="nav-link <?php echo $action=='show_users'?'active':''; ?>">Users</a>
+        <?php if($islogin && ($_SESSION['role'] == 'admin')){?>
         <a href="?action=show_articles" class="nav-link <?php echo $action=='show_articles'?'active':''; ?>">Articles</a>
         <a href="?action=show_comments" class="nav-link <?php echo $action=='show_comments'?'active':''; ?>">Comments</a>
+        <a href="?action=show_users" class="nav-link <?php echo $action=='show_users'?'active':''; ?>">Users</a>
         <a href="?action=show_category" class="nav-link">Category</a>
         <a href="?action=show_statistics" class="nav-link">Statistics</a>
+         <?php } ?> 
+         <?php if($islogin && ($_SESSION['role'] == 'author')){?>
+        <a href="?action=show_articles" class="nav-link <?php echo $action=='show_articles'?'active':''; ?>">Articles</a>
+        <a href="?action=show_comments" class="nav-link <?php echo $action=='show_comments'?'active':''; ?>">Comments</a>
+        <?php }?>
+
     </div>
 </nav>
 
@@ -56,7 +63,7 @@ $all_cat = get_all_categories($sql);
 <!--wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww-->
 <!--wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww Statistics  wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww-->
 <!--wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww-->
-<?php if ($action == 'show_statistics'){ ?>
+<?php if ($action == 'show_statistics' && $_SESSION['role'] == 'admin'){ ?>
 <div class="stats-grid">
     <div class="stat-card">
         <div class="stat-icon"><i class="fas fa-newspaper"></i></div>
@@ -122,7 +129,7 @@ $all_cat = get_all_categories($sql);
 <!--wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww-->
 <!--wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww Show Users  wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww-->
 <!--wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww-->
-<?php if ($action == 'show_users'){?>
+<?php if ($action == 'show_users' && $_SESSION['role'] == 'admin'){?>
 <h2>Users Management</h2>
 <div class="table-wrapper">
     <table class="fl-table">
@@ -149,7 +156,7 @@ $all_cat = get_all_categories($sql);
 <!--wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww-->
 <!--wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww Show Category  wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww-->
 <!--wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww-->
-<?php if ($action == 'show_category'){?>
+<?php if ($action == 'show_category'  && $_SESSION['role'] == 'admin'){?>
 <div class="card1" style="display: flex; justify-content: space-evenly; align-items: center; background: #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.1); border-radius: 5px;">
     <h2>Category Management</h2>
     <a href="display.php?mode=add_category"><button class="add-btn">Add Category</button></a>
@@ -177,8 +184,13 @@ $all_cat = get_all_categories($sql);
 <!--wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww-->
 <!--wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww Show Comments  wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww-->
 <!--wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww-->
-<?php if ($action == 'show_comments'){ 
+<?php if ($action == 'show_comments' && ($_SESSION['role'] == 'admin' || $_SESSION['role'] == 'author')){ 
     $all_comments = get_all_comments($sql);
+        
+    if($_SESSION['role'] == 'author'){
+     $id = get_user_id_by_name($sql, $_SESSION['username']);
+      $all_comments= get_user_comments($sql,$id['id']);
+    }   
 ?>
 <h2>Comment Management</h2>
 <div class="table-wrapper">
@@ -211,7 +223,13 @@ $all_cat = get_all_categories($sql);
 <!--wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww-->
 <!--wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww Show articles  wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww-->
 <!--wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww-->
-<?php if ($action == 'show_articles'){?>
+<?php if ($action == 'show_articles' && ($_SESSION['role'] == 'admin' || $_SESSION['role'] == 'author')){
+
+    if($_SESSION['role'] == 'author'){
+     $id = get_user_id_by_name($sql, $_SESSION['username']);
+      $all_articles= get_user_articles($sql,$id['id']);
+    } 
+    ?>
 <h2>Articles Management</h2>
 <div class="table-wrapper">
     <table class="fl-table">
