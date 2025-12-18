@@ -2,9 +2,6 @@
 <?php
 // ======================== functions ============================
 
-
-
-
 //============================Role============================ /
 function get_all_roles($sql) {
     $stmt = $sql->prepare("SELECT DISTINCT role FROM users");
@@ -82,6 +79,11 @@ function get_all_comments($sql) {
     $stmt->execute();
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
+function get_user_comments($sql,$id) {
+    $stmt = $sql->prepare("SELECT * from comment where user_name = ?");
+    $stmt->execute([$id]);
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
 
 function get_approved_comments_by_post($sql, $postid) {
     $stmt = $sql->prepare("SELECT * FROM comment WHERE post_id = ? and status_cmt='approved'");
@@ -117,6 +119,8 @@ function add_comment_user($sql, $comment, $postid, $user_id) {
     $stmt = $sql->prepare("INSERT INTO comment (content_cmt, created_at_cmt, post_id, user_name, status_cmt) VALUES (?, NOW(), ?, ?, 'approved')");
     $stmt->execute([$comment, $postid, $user_id]);
 }
+
+
 //============================article============================ /
 function update_article($sql, $title, $content, $img_url, $date, $cat, $postid) {
     $stmt = $sql->prepare("UPDATE article SET titre_art = :title, content_art = :content, image_url = :img, date_up_art = :date, category = :cat WHERE id_art = :id");
@@ -135,6 +139,77 @@ function get_article($sql, $postid) {
 function delete_article($sql, $id) {
     $stmt = $sql->prepare("DELETE FROM article WHERE id_art = ?");
     $stmt->execute([$id]);
+}
+function get_user_articles($sql,$id) {
+    $stmt = $sql->prepare("SELECT * from article where id_user = ?");
+    $stmt->execute([$id]);
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+//============================Statistics============================ /
+function total_articles($sql){ 
+    $stmt = $sql->prepare("SELECT count(*) as count FROM article");
+    $stmt->execute();
+    return $stmt->fetch(PDO::FETCH_ASSOC);
+}
+function total_comments($sql){ 
+    $stmt = $sql->prepare("SELECT count(*) as count FROM comment");
+    $stmt->execute();
+    return $stmt->fetch(PDO::FETCH_ASSOC);
+}
+function total_categorie($sql){ 
+    $stmt = $sql->prepare("SELECT  count(*)  as count FROM category");
+    $stmt->execute();
+    return $stmt->fetch(PDO::FETCH_ASSOC);
+}
+function total_users($sql){ 
+    $stmt = $sql->prepare("SELECT count(*) as count FROM users");
+    $stmt->execute();
+    return $stmt->fetch(PDO::FETCH_ASSOC);
+}
+function get_top_article_comments($sql){
+    $query = $sql->prepare("
+        SELECT id_art, titre_art,
+        (
+            SELECT COUNT(*)
+            FROM comment
+            WHERE comment.post_id = article.id_art
+        ) AS total_comments
+        FROM article
+        ORDER BY total_comments DESC
+        LIMIT 4
+    ");
+    $query->execute();
+    return $query->fetch(PDO::FETCH_ASSOC);
+}
+function get_top_user_comments($sql){
+    $query = $sql->prepare("
+        SELECT id, user_name,
+        (
+            SELECT COUNT(*)
+            FROM comment
+            WHERE comment.user_name = users.id
+        ) AS total_comments
+        FROM users
+        ORDER BY total_comments DESC
+        LIMIT 4
+    ");
+    $query->execute();
+    return $query->fetch(PDO::FETCH_ASSOC);
+}
+function get_top_user_articles($sql){
+    $query = $sql->prepare("
+        SELECT id, user_name,
+        (
+            SELECT COUNT(*)
+            FROM article
+            WHERE article.id_user = users.id
+        ) AS total_articles
+        FROM users
+        ORDER BY total_articles DESC
+        LIMIT 4
+    ");
+    $query->execute();
+    return $query->fetch(PDO::FETCH_ASSOC);
 }
 //============================dashboard============================ /
 function get_all_users_dashboard($sql) {
