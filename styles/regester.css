@@ -1,0 +1,173 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+/* تنسيق الـ Navbar الكامل */
+.main-nav {
+    background-color: #fff;
+    width: 100%;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+}
+
+/* الجزء العلوي */
+.nav-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 5%;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.nav-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.user-avatar {
+    width: 35px;
+    height: 35px;
+    background-color: #5d3b8e; /* اللون البنفسجي للأيقونة */
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.brand-name {
+    font-weight: bold;
+    color: #5d3b8e;
+    font-size: 18px;
+}
+
+/* الأزرار العلوية */
+.btn-add {
+    background-color: #0b8e6e; /* اللون الأخضر */
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-right: 10px;
+    font-size: 14px;
+}
+
+.btn-logout {
+    background-color: #d93025; /* اللون الأحمر */
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+/* الجزء السفلي (الروابط) */
+.nav-bottom {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    padding: 10px 0;
+}
+
+.nav-link {
+    text-decoration: none;
+    color: #333;
+    font-size: 15px;
+    font-weight: 500;
+    padding-bottom: 5px;
+}
+
+.nav-link.active {
+    color: #5d3b8e;
+    border-bottom: 2px solid #5d3b8e; /* الخط السفلي تحت Dashboard */
+}
+
+
+body {
+    background-color: #ffffff; /* اللون الأخضر في الصورة */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.form-container {
+    background: white;
+    width: 350px;
+    padding: 40px 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    text-align: center;
+}
+
+h2 {
+    margin-bottom: 30px;
+    font-size: 24px;
+    color: #333;
+}
+
+input {
+    width: 100%;
+    padding: 15px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 14px;
+    outline: none;
+}
+
+input:focus {
+    border-color: #0b8e6e;
+}
+
+.forgot-pass {
+    text-align: left;
+    margin-bottom: 20px;
+}
+
+.forgot-pass a {
+    color: #0b8e6e;
+    text-decoration: none;
+    font-size: 13px;
+}
+
+.btn {
+    width: 100%;
+    padding: 15px;
+    background-color: #0b8e6e;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.btn:hover {
+    background-color: #086d55;
+}
+
+.footer-text {
+    margin-top: 20px;
+    font-size: 13px;
+    color: #555;
+}
+
+.footer-text a {
+    color: #0b8e6e;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.footer-text a:hover {
+    text-decoration: underline;
+}

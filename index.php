@@ -50,14 +50,13 @@ $data ->execute();
      
        if($islogin && isset($_SESSION['role']) && ($_SESSION['role'] == 'admin' || $_SESSION['role'] == 'author')):
         ?>
-        <a href="display_post.php?mode=add_article"><button class="add-btn">Add article</button></a>
+        <a href="display.php?mode=add_article"><button class="add-btn">Add article</button></a>
       <?php endif; ?>
       <?php if($islogin): ?>
-       <a href="login.php?mode=null"> <button class="logout-btn">Logout</button></a>
+       <a href="regester.php?mode=null"> <button class="logout-btn">Logout</button></a>
       <?php else: ?>
         <div class="auth-buttons">
-          <a href="login.php?mode=login"><button class="login-btn">Login</button></a>
-          <a href="login.php?mode=signup"><button class="create-btn">Create Account</button></a>
+          <a href="regester.php?mode=login"><button class="login-btn">Login</button></a>
         </div>
       <?php endif; ?>
     </div>
@@ -81,7 +80,7 @@ foreach($data as $art) {
     $post_id = $art['id_art'];
     $coment_count = get_count_comments_in_post($sql,$post_id);
     ?>
-<a href="display_post.php?postid=<?php echo $post_id ?>&mode=display">
+<a href="display.php?postid=<?php echo $post_id ?>&mode=display">
     <div class="blog-card" id="post_<?php echo $post_id; ?>">
         <div class="menu-dots">⋮</div>
         <img src="<?php echo htmlspecialchars($art['image_url']); ?>">

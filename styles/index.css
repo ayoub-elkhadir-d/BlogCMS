@@ -175,8 +175,8 @@ body {
 
 .blog-card img {
   width: 100%;
-  height: 220px; /* ارتفاع ثابت لكل الصور */
-  object-fit: cover; /* يقص الصورة بشكل جميل دون تشويه */
+  height: 220px; 
+  object-fit: cover; 
   display: block;
   transition: transform 0.3s ease;
 }
